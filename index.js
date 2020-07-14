@@ -1,4 +1,5 @@
 const express = require('express');
+const { ErrorHandler, handleError } = require('./helpers/error')
 const app = express();
 
 app.use(express.json());
@@ -9,7 +10,11 @@ app.get('/', (req, res) => {
 });
 
 app.get('/error', (req, res) => {
-  throw new Error('Internal server error.')
+  throw new ErrorHandler(500, 'Internal server error.');
 })
+
+app.use((err, req, res, next) => {
+  handleError(err, res);
+});
 
 app.listen(PORT, () => console.log(`Server listening at port ${PORT}`));
